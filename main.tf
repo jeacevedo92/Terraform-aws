@@ -74,12 +74,10 @@ resource "aws_key_pair" "aws-key" {
 }
 
 
-
 resource “aws_instance” test-instance” {
-  ami = ””
-  instance_type = ”t2.micro”
-  tags= {
-    Name = ”practica1”
-    Environment = “”Dev
-  }
+  ami             = var.ami_id
+  instance_type   = var.instance_type
+  tags            = var.tags
+  security_groups = [aws_security_group.platzi_allow_ports.name]
+
 }
