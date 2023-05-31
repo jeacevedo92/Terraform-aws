@@ -14,7 +14,7 @@ resource "aws_vpc" "nginx-vpc" {
 }
 
 //Create a public subnet for the VPC we created above
-resource "aws_subnet" "subnet-public-1" {
+resource "aws_subnet" "prod-subnet-public-1" {
   vpc_id                  = aws_vpc.nginx-vpc.id    // Referencing the id of the VPC from abouve code block
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = "true"                  // Makes this a public subnet
@@ -44,16 +44,6 @@ resource "aws_route_table_association" "prod-crta-public-subnet-1" {
   route_table_id = aws_route_table.prod-public-crt.id
 }
 
-//
-resource “aws_instance” test-instance” {
-  ami = ””
-  instance_type = ”t2.micro”
-  tags= {
-    Name = ”practica1”
-    Environment = “”Dev
-  }
-}
-
 
 //Create a security group to allow SSH access and HTTP access
 resource "aws_security_group" "ssh-allowed" {
@@ -78,15 +68,18 @@ ingress {
   }
 }
 
-resource "aws_db_instance" "example" {
-  # ...
-  lifecycle {
-    prevent_destroy = true # no destruir cuando se aplique terraform destroy
-  }
-  timeouts {
-    create = "60m"
-    delete = "2h"
-  }
-}m
+resource "aws_key_pair" "aws-key" {
+  key_name   = "aws-key"
+  public_key = file(var.PUBLIC_KEY_PATH)// Path is in the variables file
+}
 
-//Create a variables.tf file and add the following variables
+
+
+resource “aws_instance” test-instance” {
+  ami = ””
+  instance_type = ”t2.micro”
+  tags= {
+    Name = ”practica1”
+    Environment = “”Dev
+  }
+}
